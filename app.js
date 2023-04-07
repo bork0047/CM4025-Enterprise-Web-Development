@@ -7,11 +7,15 @@ const app = express()
 
 app.use(express.static('frontendd'))
 app.use('/css', express.static(__dirname + 'frontendd/css'))
-app.use('/html', express.static(__dirname + 'frontendd/html'))
+app.use('/js', express.static(__dirname + 'frontendd/js'))
 app.use('/images', express.static(__dirname + 'frontendd/images'))
 
+//Set Views
+app.set('views', './views')
+app.set('view engine', 'ejs')
+
 app.get('', (req, res) => {
-    res.sendFile(__dirname + '/PriceCalc/frontendd/html/myWebPage.html')
+    res.render('index')
 })
 
 /*
