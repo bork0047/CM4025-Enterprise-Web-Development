@@ -5,10 +5,9 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 
-app.use(express.static('frontendd'))
-app.use('/css', express.static(__dirname + 'frontendd/css'))
-app.use('/js', express.static(__dirname + 'frontendd/js'))
-app.use('/images', express.static(__dirname + 'frontendd/images'))
+app.use(express.static('views'))
+app.use('/css', express.static(__dirname + 'views/css'))
+app.use('/images', express.static(__dirname + 'views/images'))
 
 //Set Views
 app.set('views', './views')
