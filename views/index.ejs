@@ -28,6 +28,8 @@
 </div>
   
 <script>
+
+  /*
   function calculatePrice() {
     var s = document.getElementById("salary").value;
     var d = document.getElementById("days").value;
@@ -38,6 +40,43 @@
     dailyRate = s/365;
     finalPrice = dailyRate * d;
     document.getElementById("finalPrice").innerHTML = "£" + finalPrice.toFixed(2);
+  }
+  */
+
+
+  $('#submit').click(handleClick);
+  $('#storeQuote').click(storeQuote);
+
+  function handleClick() {
+    var salary = $('#salary').val();
+    var days = $('#days').val();
+
+    var url = "/api/getPrice?"+"salary="+salary+"&days="+days;
+    console.log(url)
+
+    $.ajax(
+      {url: url,
+      success: function(finalPrice){
+        $("#finalPrice").html(finalPrice);
+      }
+    });
+    return false;
+  }
+
+  function storeQuote() {
+    var salary = $('#salary').val();
+    var days = $('#days').val();
+    var quoteName = $('#quoteName').val();
+    var url = "/api/storeQuote?"+"quoteName="+quoteName+"&salary="+salary+"&days="+days;
+    console.log(url)
+
+    $.ajax(
+      {url: url,
+      success: function(finalPrice){
+        $("#finalPrice").html(finalPrice);
+      }
+    });
+
   }
   </script>
 

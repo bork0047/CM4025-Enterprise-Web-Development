@@ -9,6 +9,11 @@ const app = express()
 const { MongoClient } = require("mongodb")
 const uri = "mongodb://127.0.0.1:27017"
 
+
+var options = {
+    index: "index.ejs"
+  };
+
 //code for connecting to Mongo Database
 // Database stuff
 // Create a new MongoClient
@@ -16,7 +21,7 @@ const client = new MongoClient(uri);
 async function run() {
 try {
     //Write databse Insert/Update/Query code here..
-     var dbo = client.db("mydb");
+     var dbo = client.db("DATAbased");
     var myobj = { quoteName: n, salary: s, days: d }; //******CHECK!!!****
     await dbo.collection("quotes").insertOne(myobj, function(err, res) {
         if (err) {
@@ -40,7 +45,7 @@ run().catch(console.dir);
 
 
 
-//my own stuff
+//my own stuff to actually run the page lol
 app.use(express.static('views'))
 app.use('/css', express.static(__dirname + 'views/css'))
 app.use('/images', express.static(__dirname + 'views/images'))
