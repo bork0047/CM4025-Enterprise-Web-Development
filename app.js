@@ -5,6 +5,37 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 
+//mongo time
+const { MongoClient } = require("mongodb")
+const uri = "mongodb://127.0.0.1:27017"
+
+//code for connecting to Mongo Database
+// Database stuff
+// Create a new MongoClient
+const client = new MongoClient(uri);
+async function run() {
+try {
+    // Connect the client to the server (optional starting in v4.7)
+    await client.connect();
+    // Establish and verify connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Connected successfully to server");
+    console.log('Start the database stuff');
+    //Write databse Insert/Update/Query code here..
+ console.log('End the database stuff');
+} finally {
+// Ensures that the client will close when you finish/error
+    await client.close();
+}
+}
+run().catch(console.dir);
+
+
+
+
+
+
+//my own stuff
 app.use(express.static('views'))
 app.use('/css', express.static(__dirname + 'views/css'))
 app.use('/images', express.static(__dirname + 'views/images'))
