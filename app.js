@@ -7,7 +7,7 @@ const app = express()
 
 //mongo time
 const { MongoClient } = require("mongodb");
-const uri = "mongodb://test:borko@127.0.0.1:27017/DATAbased";
+const uri = "mongodb://test:borko@0.0.0.0:27017/DATAbased";
 
 //for checking if databases work:
 //const uri = "mongodb://127.0.0.1:27017";
