@@ -7,13 +7,15 @@ const app = express()
 
 //mongo time
 const { MongoClient } = require("mongodb");
-const uri = "mongodb://test:password@127.0.0.1:27017/quotes";
+const uri = "mongodb://test:borko@127.0.0.1:27017/DATAbased";
+
+//for checking if databases work:
+//const uri = "mongodb://127.0.0.1:27017";
 
 
 var options = {
     index: "index.ejs"
   };
-
 
 
 app.get('/api', function(req, res){
@@ -88,6 +90,7 @@ app.get('/api/storeQuote', function(req, res){
 })
 
 
+//////////////////////////////////
 //this is for running the webpage
 //app.use(express.static(dir, options))
 
