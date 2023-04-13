@@ -41,6 +41,7 @@ app.get('/api', function(req, res){
 
 // e.g. test using:
 //http://127.0.0.1:8000/api/getPrice?salary=2000&days=20
+//get the price method
 app.get('/api/getPrice', function(req, res){
     //res.send("Hello world!")
     // Copied from front end
@@ -59,7 +60,7 @@ app.get('/api/getPrice', function(req, res){
     res.send(""+roundedPrice)
 });
 
-
+//get count function
 app.get('/api/getCount', function(req, res) {
 	console.log("Mongo uri is: " + uri)
 
@@ -82,8 +83,9 @@ app.get('/api/getCount', function(req, res) {
 	
 })
 
-//close attempt for a delete quote function, most of the online
-//most online help is
+//close attempt for a delete quote function
+//would be great if it output the value as a String
+//delete quote function, almost the same as the save quote one
 app.get('/api/deleteQuote', function(req, res){
 	var n = req.query.quoteDelName
 	console.log("Deleting quote: "+n)
@@ -159,7 +161,7 @@ app.get('/api/storeQuote', function(req, res){
 
 app.post('/api/change-password', async (req, res) => {
 	const { token, newpassword: plainTextPassword } = req.body
-
+	//give errors to users if they do the wrong thing
 	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
 		return res.json({ status: 'error', error: 'Invalid password' })
 	}
@@ -191,6 +193,7 @@ app.post('/api/change-password', async (req, res) => {
 	}
 })
 
+//login function
 app.post('/api/login', async (req, res) => {
 	const { username, password } = req.body
 	const user = await User.findOne({ username }).lean()
@@ -209,7 +212,7 @@ app.post('/api/login', async (req, res) => {
 			},
 			JWT_SECRET
 		)
-
+		
 		return res.json({ status: 'ok', data: token })
 	}
 
@@ -221,6 +224,7 @@ app.post('/api/login', async (req, res) => {
 	res.json({ status: 'error', error: 'Invalid username/password' })
 })
 
+//register function
 app.post('/api/register', async (req, res) => {
 	const { username, password: plainTextPassword } = req.body
 
@@ -292,7 +296,7 @@ app.get('/entry', (req, res) => {
     //run the entry.ejs page
     res.render('entry')
 })
-
+//1906490
 app.get('/index', (req, res) => {
     //run the index.ejs page
     res.render('index')
