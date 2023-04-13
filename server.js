@@ -4,18 +4,50 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const User = require('./model/user')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const app = express()
 const port = 8080
+
+//if this is leaked, all of my json payloads can be manipulated
+const JWT_SECRET = 'bangmyheadonthekeyboard@#@%!1243523efdgfhhsteagnkaerh'
 
 mongoose.connect('mongodb://127.0.0.1:27017')
 
 app.use(bodyParser.json())
 
 
-app.post('api/login', async (res, req) => {
-    res.json({ status: 'ok' })
+
+
+
+//login api
+app.post('/api/login', async (req, res) => {
+    //check if username and password are correct
+	const { username, password } = req.body
+	const user = await User.findOne({ username }).lean()
+
+	if (!user) {
+		return res.json({ status: 'error', error: 'Invalid username/password' })
+	}
+
+	if (await bcrypt.compare(password, user.password)) {
+		// the username, password combination is successful
+
+		const token = jwt.sign(
+			{
+				id: user._id,
+				username: user.username
+			},
+			JWT_SECRET
+		)
+
+		return res.json({ status: 'ok', data: token })
+	}
+
+	res.json({ status: 'error', error: 'Invalid username/password' })
 })
 
+
+//register api
 app.post('/api/register', async (req, res) => {
     //add a body parser to show the username and password
     console.log(req.body)
@@ -76,7 +108,7 @@ app.set('view engine', 'ejs')
 
 app.get('', (req, res) => {
     //show the page entry.ejs
-    res.render('entry')
+    res.render('login')
 })
 
 
