@@ -11,14 +11,49 @@ mongoose.connect('mongodb://127.0.0.1:27017')
 
 app.use(bodyParser.json())
 
+
+app.post('api/login', async (res, req) => {
+    res.json({ status: 'ok' })
+})
+
 app.post('/api/register', async (req, res) => {
     //add a body parser to show the username and password
     console.log(req.body)
 
     //get the username and password 
-    const { username, password } = req.body
+    const { username, password: plainTextPassword } = req.body
 
-    console.log(await bcrypt.hash(password, 10))
+    //display some errors as criteria for username and password
+    if (!username || typeof username !== 'string') {
+        return res.json({ status: 'error', 
+        error: 'Invalid username, must be a string'})
+    }
+
+    if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+        return res.json({ status: 'error', 
+        error: 'Invalid password, must be a string'})
+    }
+
+    if (plainTextPassword.length < 5) {
+        return res.json({ status: 'error', 
+        error: 'Invalid password, password too smol. Should be atleast 6 characters'})
+    }
+
+    const password = await bcrypt.hash(plainTextPassword, 10)
+
+    try {
+        const response = await User.create({
+            username,
+            password
+        })
+        console.log('User created successfully: ' + response)
+    } catch (error) {
+		if (error.code === 11000) {
+			// duplicate key
+			return res.json({ status: 'error', error: 'There is already a user with that nickname' })
+		}
+		throw error
+	}
 
     // for security reasons HASH THE PASSWORDS
     //pass the passwords into a special encrypted function
@@ -34,7 +69,7 @@ app.post('/api/register', async (req, res) => {
 app.use(express.static('views'))
 app.use('/css', express.static(__dirname + 'views/css'))
 app.use('/images', express.static(__dirname + 'views/images'))
-
+app.use(bodyParser.json())
 //Set Views
 app.set('views', './views')
 app.set('view engine', 'ejs')

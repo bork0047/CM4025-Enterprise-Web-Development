@@ -3,47 +3,40 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>Login</title>
 	</head>
 	<body>
-		<h1>Registration</h1>
-		<form id="reg-form">
+		<h1>Login</h1>
+		<form id="login">
 			<input type="text" autocomplete="off" id="username" placeholder="Username" />
 			<input type="password" autocomplete="off" id="password" placeholder="Password" />
 			<input type="submit" value="Submit Form" />
 		</form>
 
 		<script>
-            //get the registration form element
-			const form = document.getElementById('reg-form')
+			const form = document.getElementById('login')
+			form.addEventListener('submit', login)
 
-            //when the form submits, we file a listener
-			form.addEventListener('submit', registerUser)
-
-            //make an event when we register user
-			async function registerUser(event) {
-                //preven the page from refreshing
+			async function login(event) {
 				event.preventDefault()
 				const username = document.getElementById('username').value
 				const password = document.getElementById('password').value
-                
 
-                //use some json (hence .js)
-				const result = await fetch('/api/register', {
+				const result = await fetch('/api/login', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
-                    //stringify the body which we write the request in
 					body: JSON.stringify({
-                        //get usrname and password and pass it to server
 						username,
 						password
 					})
 				}).then((res) => res.json())
 
 				if (result.status === 'ok') {
-					// everything went fine
+					// everythign went fine
+					console.log('Got the token: ', result.data)
+					localStorage.setItem('token', result.data)
 					alert('Success')
 				} else {
 					alert(result.error)
