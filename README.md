@@ -22,3 +22,9 @@ Web Development stuff from labs
 
 So what I haven't managed to do is to allow users to edit existing quotes, althought I attempted it, but it ruined my whole script, also edit the prompt from the Login, Register and Change password pages to take the user to the next page.
 Will write a Linux guide on this one day.
+
+
+
+
+
+I am grateful for my struggles in both univercity and with this coursework in particular, because of how hard it was, and how it inspired me to debug and learn for hours. Wrote 15 pages out of a notebook with commands and different methods... amazing. Thanks to all of my teachers and I will be showing my future work on github, thanks to their inspiration.
