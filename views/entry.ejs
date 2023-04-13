@@ -16,6 +16,7 @@
 		<script>
             //get the registration form element
 			const form = document.getElementById('reg-form')
+
             //when the form submits, we file a listener
 			form.addEventListener('submit', registerUser)
 
@@ -25,13 +26,17 @@
 				event.preventDefault()
 				const username = document.getElementById('username').value
 				const password = document.getElementById('password').value
+                
 
+                //use some json (hence .js)
 				const result = await fetch('/api/register', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
+                    //stringify the body which we write the request in
 					body: JSON.stringify({
+                        //get usrname and password and pass it to server
 						username,
 						password
 					})

@@ -4,6 +4,7 @@ const port = 8080
 const fs = require('fs')
 const express = require('express')
 const app = express()
+const path = require('path')
 
 //mongo time
 const { MongoClient } = require("mongodb");
@@ -110,6 +111,7 @@ app.set('views', './views')
 app.set('view engine', 'ejs')
 
 app.get('', (req, res) => {
+    //run the index.ejs page
     res.render('index')
 })
 
