@@ -228,17 +228,17 @@ app.set('view engine', 'ejs')
 app.engine('.html', require('ejs').renderFile)
 
 app.get('', (req, res) => {
-    //run the index.ejs page
+    //run the main page
     res.render('login')
 })
 
 app.get('/login', (req, res) => {
-    //run the index.ejs page
+    //run the login.ejs page
     res.render('login')
 })
 
 app.get('/entry', (req, res) => {
-    //run the index.ejs page
+    //run the entry.ejs page
     res.render('entry')
 })
 
@@ -248,7 +248,7 @@ app.get('/index', (req, res) => {
 })
 
 app.get('/thanks', (req, res) => {
-    //run the index.ejs page
+    //run the thanks.ejs page
     res.render('thanks')
 })
 
