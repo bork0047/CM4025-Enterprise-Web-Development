@@ -1,4 +1,6 @@
 # CM4025-Enterprise-Web-Development
+Name: Borislav Nikolaev Aleksandrov
+Student number: 1906490
 Web Development stuff from labs
 
 1. Created my index.ejs file, which is just the normal functional webpage
