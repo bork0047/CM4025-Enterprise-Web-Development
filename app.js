@@ -14,6 +14,12 @@ const port = 8080
 const { MongoClient } = require("mongodb");
 const uri = "mongodb+srv://test:borko@cluster0.zrzyyhw.mongodb.net/test";
 
+const userSchema = {
+    username: String,
+    password: String,
+}
+
+
 const JWT_SECRET = 'bangmyheadonthekeyboard@#@%!1243523efdgfhhsteagnkaerh'
 
 mongoose.connect('mongodb://127.0.0.1:27017')
@@ -44,14 +50,59 @@ app.get('/api/getPrice', function(req, res){
     console.log(s)
     console.log(d)
     let finalPrice = 0;
-    dailyRate = s/365;
-    price = Math.round(dailyRate * d);
+    //dailyRate = s/365;
+	fudge = Math.random() + 0.5;
+    price = Math.round(s * d);
+	fudgePrice = fudge * price;
     var roundToNearest = 50;
-    roundedPrice = Math.round((price+roundToNearest)/roundToNearest) * roundToNearest // Always round up
+    roundedPrice = Math.round((fudgePrice+roundToNearest)/roundToNearest) * roundToNearest // Always round up
     res.send(""+roundedPrice)
+});
+
+
+app.get('/api/getCount', function(req, res) {
+	console.log("Mongo uri is: " + uri)
+
+	const client = new MongoClient(uri);
+	const collection = client.db("DATAbased")
+    async function run() {
+		try {
+			// Count the total documents
+			collection.countDocuments($quotes).then((count_documents) => {
+				console.log(count_documents);
+			}).catch((err) => {
+				console.log(err.Message);
+			})  
+		} finally {
+			// Ensures that the client will close when you finish/error
+			await client.close()
+		}
+		}
+		run().catch(console.dir)
+	
 })
 
+//close attempt for a delete quote function, most of the online
+//most online help is
+app.get('/api/deleteQuote', function(req, res){
+	var n = req.query.quoteDelName
+	console.log("Deleting quote: "+n)
 
+	// Database stuff
+    // Create a new MongoClient
+    const client = new MongoClient(uri);
+    client.connect(uri, function(err, db) {
+		
+		if (err) throw err;
+		var dbo = client.db("DATAbased")
+		var myobj = { quoteDelName: n}
+		dbo.collection("quotes").deleteOne(myobj, function(err, obj) {
+		  if (err) throw err;
+		  console.log("1 document deleted");
+		  db.close();
+		});
+	  });
+})
 
 
 

@@ -12,23 +12,33 @@
 
 <div id="header">
   <h1>How much to charge?</h1>
-  <p>If you were a freelance web designerrrrrrrrrrrr, how much should you charge for a website? Fill out the form and find out!</p>
+  <p>If you were a freelance web designer, how much should you charge for a website? Fill out the form and find out!</p>
 </div>
   
 <div class="container form-group">
   <form id="budget">
     <h1><a href="/thanks">Calculations</a></h1>
-    <a class="btn btn-dark btn-sm" href="/views/login.ejs" >Link to some EJS File</a>
-    <label for="salary">What annual salary seems suitable for you?</label>
+    <label for="salary">What is your hourly rate?</label>
     <input type="text" id="salary" name="salary" class="form-control" /><br><br>
-    <label for="days">How many days do you think it will take you to make the website?</label>
+    <label for="days">How many hours do you want??</label>
     <input type="text" id="days" name="days" class="form-control"/><br><br>
-    <input type="button" id="submit" value="Calculate your price!" class="btn btn-lg"><br><br>
+    <input type="button" id="submit" value="Calculate your final budget figure!" class="btn btn-lg"><br><br>
     <label id="finalPrice"> ??? </label>
+    <label for="days">Please, type in the name of the quote's worker:</label>
     <input type="text" id="quoteName" name="name" class="form-control"/><br><br>
     <input type="button" id="storeQuote" value="Store Quote" class="btn btn-lg"><br><br>
   </form>
 </div>
+
+<form>
+  <label for="delName">Whos quote do you want to delete?</label>
+  <input type="text" id="quoteDelName" name="name" class="form-control"/><br><br>
+  <input type="button" id="deleteQuote" value="Delete Quote" class="btn btn-lg"><br><br>
+  
+  <label id="countDB"> Count of values in the database </label>
+  <input type="button" id="showCount" value="Show Count" class="btn btn-lg"><br><br>
+
+</form>
   
 <div class="container">
   <img src="images/calculator.jpg" class="img-responsive" alt="Calculator image">
@@ -36,9 +46,10 @@
   
 <script>
 
-
   $('#submit').click(handleClick);
   $('#storeQuote').click(storeQuote);
+  $('#showCount').click(handleClick2);
+  $('#deleteQuote').click(deleteQuote);
 
   function handleClick() {
     var salary = $('#salary').val();
@@ -71,6 +82,35 @@
     });
 
   }
+
+  function deleteQuote(){
+    var quoteDelName = $('quoteDelName').val();
+    var url = "/api/deleteQuote?"+"quoteDelName" + quoteDelName;
+    console.log(url)
+
+    $.ajax(
+      {url: url,
+      success: function(quoteDelName){
+        $("#quoteDelName").html(quoteDelName);
+      }
+    });
+  }
+
+
+  function handleClick2(){
+
+    var url = "/api/getCount?";
+    console.log(url)
+
+    $.ajax(
+      {url: url,
+      success: function(countDB){
+        $("#countDB").html(countDB);
+      }
+    });
+    return false;
+  }
+  
   </script>
 
 </body>
