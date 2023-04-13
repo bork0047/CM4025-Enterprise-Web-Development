@@ -1,14 +1,24 @@
 //imports
-const http = require('http')
-const port = 8080
-const fs = require('fs')
 const express = require('express')
-const app = express()
 const path = require('path')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const User = require('./model/user')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const app = express()
+const port = 8080
+
 
 //mongo time
 const { MongoClient } = require("mongodb");
 const uri = "mongodb+srv://test:borko@cluster0.zrzyyhw.mongodb.net/test";
+
+const JWT_SECRET = 'bangmyheadonthekeyboard@#@%!1243523efdgfhhsteagnkaerh'
+
+mongoose.connect('mongodb://127.0.0.1:27017')
+
+app.use(bodyParser.json())
 
 //for checking if databases work:
 //const uri = "mongodb://127.0.0.1:27017";
@@ -92,9 +102,110 @@ app.get('/api/storeQuote', function(req, res){
 
 
 //////////////////////////////////
-//this is for running the webpage
-//app.use(express.static(dir, options))
+//this is for register, login and change password
 
+//if this is leaked, all of my json payloads can be manipulated
+
+app.post('/api/change-password', async (req, res) => {
+	const { token, newpassword: plainTextPassword } = req.body
+
+	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid password' })
+	}
+
+	if (plainTextPassword.length < 5) {
+		return res.json({
+			status: 'error',
+			error: 'Password too small. Should be atleast 6 characters'
+		})
+	}
+
+	try {
+		const user = jwt.verify(token, JWT_SECRET)
+
+		const _id = user.id
+
+		const password = await bcrypt.hash(plainTextPassword, 10)
+
+		await User.updateOne(
+			{ _id },
+			{
+				$set: { password }
+			}
+		)
+		res.json({ status: 'ok' })
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: ';))' })
+	}
+})
+
+app.post('/api/login', async (req, res) => {
+	const { username, password } = req.body
+	const user = await User.findOne({ username }).lean()
+
+	if (!user) {
+		return res.json({ status: 'error', error: 'Invalid username/password' })
+	}
+
+	if (await bcrypt.compare(password, user.password)) {
+		// the username, password combination is successful
+
+		const token = jwt.sign(
+			{
+				id: user._id,
+				username: user.username
+			},
+			JWT_SECRET
+		)
+
+		return res.json({ status: 'ok', data: token })
+	}
+
+    if (await bcrypt.compare(password, user.password)) {
+        return res.redirect('/entry')
+    }
+
+
+	res.json({ status: 'error', error: 'Invalid username/password' })
+})
+
+app.post('/api/register', async (req, res) => {
+	const { username, password: plainTextPassword } = req.body
+
+	if (!username || typeof username !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid username' })
+	}
+
+	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid password' })
+	}
+
+	if (plainTextPassword.length < 5) {
+		return res.json({
+			status: 'error',
+			error: 'Password too small. Should be atleast 6 characters'
+		})
+	}
+
+	const password = await bcrypt.hash(plainTextPassword, 10)
+
+	try {
+		const response = await User.create({
+			username,
+			password
+		})
+		console.log('User created successfully: ', response)
+	} catch (error) {
+		if (error.code === 11000) {
+			// duplicate key
+			return res.json({ status: 'error', error: 'Username already in use' })
+		}
+		throw error
+	}
+
+	res.json({ status: 'ok' })
+})
 
 
 
@@ -105,76 +216,42 @@ app.get('/api/storeQuote', function(req, res){
 app.use(express.static('views'))
 app.use('/css', express.static(__dirname + 'views/css'))
 app.use('/images', express.static(__dirname + 'views/images'))
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.static('/entry3.ejs'))
 
 //Set Views
+//app.set('views', './views')
 app.set('views', './views')
 app.set('view engine', 'ejs')
 
+// register .html as an engine in express view system
+app.engine('.html', require('ejs').renderFile)
+
 app.get('', (req, res) => {
+    //run the index.ejs page
+    res.render('login')
+})
+
+app.get('/login', (req, res) => {
+    //run the index.ejs page
+    res.render('login')
+})
+
+app.get('/entry', (req, res) => {
+    //run the index.ejs page
+    res.render('entry')
+})
+
+app.get('/index', (req, res) => {
     //run the index.ejs page
     res.render('index')
 })
 
-/*
-//json parser
-app.use(
-    bodyParser.urlencoded({
-        extended: true
-    })
-);
-app.use(bodyParser.json());
+app.get('/thanks', (req, res) => {
+    //run the index.ejs page
+    res.render('thanks')
+})
 
-app.use((req, res, next) => {
-    if(req.headers.token == 'NODEJSAPP') {
-        req.skip == true;
-    } else {
-        req.skip = false;
-    }
-    next();
-});
-
-app.route('/auth').post((req, res) => {
-    if(req.skip){
-        res.send('OK, authenticated!')
-    } else {
-        res.send("No, can t access that");
-    }
-});
-
-app.route('/').get((req, res) => {
-    res.send('Hello World!');
-});
-*/
 app.listen(port, () => {
     console.log('Server Started on port: ' + port);
 });
-
-/*
-//connects the express-handlebard package and tells it to go look
-//into the frontendd folder for the html files
-app.set("frontendd", path.join(__dirname, "frontendd"))
-app.engine(".hbs", exphbs({
-    extname:".hbs",
-    defaultLayout: false
-}))
-app.set("view engine", ".hbs")
-
-
-app.get("/", function(req, res) {
-    res.send('Index route is working')
-})
-
-//res.write("The date and time are currently: " + currentdate.myDateTime());
-    //res.write( " \n")
-    //var randomJoke = knockknock()
-    //res.end(randomJoke);
-    
-app.listen(port, function(error){
-    if (error) {
-        console.log('Something went wrong', error)
-    } else {
-        console.log('Server is listening on port ' + port)
-    }
-})
-
-*/

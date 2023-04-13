@@ -2,16 +2,29 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+        <link rel="stylesheet" href="css/login_style.css"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Login</title>
 	</head>
 	<body>
-		<h1>Login</h1>
+		<h1 class=animated>Login to continue</h1>
 		<form id="login">
-			<input type="text" autocomplete="off" id="username" placeholder="Username" />
-			<input type="password" autocomplete="off" id="password" placeholder="Password" />
-			<input type="submit" value="Submit Form" />
-		</form>
+            <div class="container">
+              <label for="username"><b>Username</b></label>
+              <input type="text" autocomplete="off" id="username" placeholder="Enter Username" name="username" required>
+      
+              <label for="password"><b>Password</b></label>
+              <input type="password" autocomplete="off" id="password" placeholder="Enter Password" name="password" required>
+      
+              <input type="submit" value="Login">
+      
+              <p>Not registered? <a href="/entry">Create an account</a></p>
+            </div>
+          </form>
+
+          <div style="margin-top: 20px;">
+			<a href="/index"><button style="background-color: green; color: white; padding: 10px;">Proceed to the main page</button></a>
+		</div>
 
 		<script>
 			const form = document.getElementById('login')

@@ -58,3 +58,10 @@ body {
     font-weight: bold;
     margin-top: 20px;
   }
+  
+  .monke {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+  }
