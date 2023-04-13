@@ -16,7 +16,42 @@ mongoose.connect('mongodb://127.0.0.1:27017')
 app.use(bodyParser.json())
 
 
+app.post('/api/change-password', async (req, res) => {
+    //make sure this token is not to be tampered with
+	const { token, newpassword: plainTextPassword } = req.body
 
+	if (!plainTextPassword || typeof plainTextPassword !== 'string') {
+		return res.json({ status: 'error', error: 'Invalid password' })
+	}
+
+	if (plainTextPassword.length < 5) {
+		return res.json({
+			status: 'error',
+			error: 'Password too small. Should be atleast 6 characters'
+		})
+	}
+
+	try {
+        //wrap it into try-catch, in case someone tries to be fishy
+        //and to prevent crashes 
+		const user = jwt.verify(token, JWT_SECRET)
+
+		const _id = user.id
+
+		const password = await bcrypt.hash(plainTextPassword, 10)
+
+		await User.updateOne(
+			{ _id },
+			{
+				$set: { password }
+			}
+		)
+		res.json({ status: 'ok' })
+	} catch (error) {
+		console.log(error)
+		res.json({ status: 'error', error: ';))' })
+	}
+})
 
 
 //login api
